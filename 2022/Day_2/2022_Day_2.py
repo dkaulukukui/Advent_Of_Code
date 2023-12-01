@@ -39,7 +39,7 @@ if platform == "linux" or platform == "linux2":
 elif platform == "darwin":
     # OS X
     print ("MacOS")
-    full_file_path_name = "/Users/donald.kaulukukui/Documents/VsCode_Projects/Advent_Of_Code/" + str(year) + "/Day_" + str(day)
+    mydir = "/Users/donald.kaulukukui/Documents/VsCode_Projects/Advent_Of_Code/" + str(year) + "/Day_" + str(day)
 
 elif platform == "win32":
     # Windows...
