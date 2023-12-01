@@ -1,13 +1,26 @@
-# Day 1 
-# Challenge 1
-# 
-#
-#Get file
+import os
+from sys import platform
 
+year = 2022
 day = 1
 
-full_file_path_name = "/Users/donald.kaulukukui/Documents/VsCode_Projects/Advent_Of_Code_2022/Day_" + str(day)+"/input.txt"
+if platform == "linux" or platform == "linux2":
+    # linux
+    print ("Linux")
+elif platform == "darwin":
+    # OS X
+    print ("MacOS")
+    full_file_path_name = "/Users/donald.kaulukukui/Documents/VsCode_Projects/Advent_Of_Code/" + str(year) + "/Day_" + str(day)
 
+elif platform == "win32":
+    # Windows...
+    print ("Windows")
+
+    mydir = "C:\\Users\\donal\\Documents\\Projects\\Advent_Of_Code\\Advent_Of_Code\\" + str(year) + "\\Day_" + str(day)
+
+myfile = "input.txt"    
+full_file_path_name = os.path.join(mydir, myfile)
+print(full_file_path_name)
 
 def main(part):
     res = 0
