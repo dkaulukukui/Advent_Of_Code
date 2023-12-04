@@ -48,25 +48,43 @@ def main(part):
         ## input data is now in a 2D array
 
         number_list = []
+        number_locations = []
 
         ##############################################Part 1 ############################################
 
         for y in range(len(part_number_matrix)):  #for every row
             for x in range(len(part_number_matrix[0])): #check every character
                 if (part_number_matrix[y][x].isnumeric()):  #if it is a number
-                    number_list.append(part_number_matrix[y][x]) #add it to the number list
+                    number_list.append(part_number_matrix[y][x]) #add it to the number list, top left = 0,0,  y,x
                 else:                       
                     if len(number_list)>0:                  #if number list isnt empty
                         #do something with the number
-
+                        print(number_list)
                         #check every character around the number for a symbol
                         #build list of places to check
+                        #progamming logic means that we would only get here with a non-empty number list 
+                        #after we've reached a non-number 
+                        # so first char location =  current row, current column - length of number list
+                        number_length = len(number_list)
+                        first_char_location = [y, x-number_length]
+                        last_char_location = [y, x-1]
+
+
+                        for index, i in enumerate(number_list):
+                            number_locations.append([y,x-(1+index)])
+
+                        print("number len is " + str(number_length))
+                        print("first char location = " + str(first_char_location))
+                        print("last char location = " + str(last_char_location))
+                        print(number_locations)
+
                         #check first
                         #
                         #
                         #
                         #if there is a symbol then save it as a part number
                     number_list = []                        #reset the number list
+                    number_locations = []                   #reset the number locations
 
 
         ###################################################################################################
