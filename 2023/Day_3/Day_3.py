@@ -49,12 +49,14 @@ def main(part):
 
         number_list = []
 
+        ##############################################Part 1 ############################################
+
         for y in range(len(part_number_matrix)):  #for every row
             for x in range(len(part_number_matrix[0])): #check every character
-                if (part_number_matrix[y][x].isnumeric()):
-                    number_list.append(part_number_matrix[y][x])
-                else:
-                    if len(number_list)>0:
+                if (part_number_matrix[y][x].isnumeric()):  #if it is a number
+                    number_list.append(part_number_matrix[y][x]) #add it to the number list
+                else:                       
+                    if len(number_list)>0:                  #if number list isnt empty
                         #do something with the number
 
                         #check every character around the number for a symbol
@@ -64,7 +66,10 @@ def main(part):
                         #
                         #
                         #if there is a symbol then save it as a part number
-                    number_list = []
+                    number_list = []                        #reset the number list
+
+
+        ###################################################################################################
         if part == 1:
 
             print(part_number_matrix[0])
