@@ -32,6 +32,7 @@ def main(part):
 
         data = input_file.read().strip().split('\n')
         
+        
         #print (data)
 
         #initialize some stuff
@@ -52,24 +53,29 @@ def main(part):
         number_list = []
         number_locations = []
         part_numbers = []
+        length_of_row = len(part_number_matrix[0])
+
 
         ##############################################Part 1 ############################################
 
-        for y in range(len(part_number_matrix)):  #for every row
-            for x in range(len(part_number_matrix[0])): #check every character
+        for y in range(len(part_number_matrix)):  #for every, row 0-139
+            for x in range(length_of_row): #check every character in each column 0-139
 
                 char = part_number_matrix[y][x]
 
                 if (char.isnumeric()):  #if it is a number
                     number_list.append(char) #add it to the number list, top left = 0,0,  y,x
+
                 else:
-                    if (char not in special_characters)  and  (char != '.'):
-                        print(char)                      
+                    #if (char not in special_characters)  and  (char != '.'):
+                    #    print(char)                      
 
                     if len(number_list)>0:                  #if number list isnt empty
                         #do something with the number
                         #print(number_list)
 
+
+                        #turn number list into a string
                         number_string = ""
                         for c in number_list:
                             number_string  = number_string + c
@@ -82,8 +88,18 @@ def main(part):
                         #after we've reached a non-number 
                         # so first char location =  current row, current column - length of number list
                         number_length = len(number_list)
-                        first_char_location = x-number_length
-                        last_char_location = x-1
+                        
+                        if (x == 0): #edge case where part number ends at the end of a line
+                        
+                            first_char_location = length_of_row - number_length
+                            last_char_location = length_of_row - 1
+                        
+                            #print("row overflow condition")
+                            #print("checking rows = " + str(y-1) + " to " + str(y+1))
+                            #print("checking columns = " + str(first_char_location-1) + " to " +  str(last_char_location))
+                        else:
+                            first_char_location = x-number_length
+                            last_char_location = x-1
 
                         #print("number len is " + str(number_length))
                         #print("number list row = " + str(y))
@@ -93,39 +109,46 @@ def main(part):
                         #check all characters surrounding the number_list
 
                         #check the row above and below
-                        #if( y == 0):
-                        #    print("checking rows = " + str(y-1) + " to " + str(y+1))
-                        #    print("checking columns = " + str(first_char_location-1) + " to " +  str(last_char_location+1))
+                        if( number_string == "324"):
+                            print("found 324 condition")
+                            print("checking rows = " + str(y-1) + " to " + str(y+1))
+                            print("checking columns = " + str(first_char_location-1) + " to " +  str(last_char_location))
 
-                        for y_to_check in range(y-1,y+2):
+                        for y_to_check in range(y-1,y+2): 
 
-                            if (y_to_check  >= 0) and (y_to_check <= line_counter-1):
+                            if (x==0):
+                                y_to_check =  y_to_check - 1
+
+                            if (y_to_check  >= 0) and (y_to_check <= line_counter-1):   # only check rows within the bounds of the matrix
 
                                 for x_to_check in range(first_char_location-1,last_char_location+2):
 
+                                    if x_to_check > length_of_row-1:   # dont  let x exceed # of columns
+                                        x_to_check  =  length_of_row-1
+
+                                    #if there is a symbol then save  part number
+                                    if( number_string == "324"):
+                                        print("checking char " + part_number_matrix[y_to_check][x_to_check] + " at y=" + str(y_to_check) + " x=" + str(x_to_check))
+
+
                                     if part_number_matrix[y_to_check][x_to_check] in special_characters:
                                         #print("Special Char found at row  " +str(y_to_check) + ", column  " + str(x_to_check) + " it is " + part_number_matrix[y_to_check][x_to_check])
+
+                                        if( number_string == "324"):
+                                            print("Special Char found at row  " +str(y_to_check) + ", column  " + str(x_to_check) + " it is " + part_number_matrix[y_to_check][x_to_check])
+
+                                            print("found 324 condition")
+                                            print("appending part number = " + number_string)
+
                                         part_numbers.append(int(number_string))
-                            #else:
-                            #    print("exceeded max rows or went too low")
-
-
-                        #if there is a symbol then save it as a part number
-
-
-
 
                     number_list = []                        #reset the number list
                     number_locations = []                   #reset the number locations
 
                 
         ###################################################################################################
-        if part == 1:
-
-            
-            print(part_numbers)
-            print(special_characters)
-   
+        if part == 1:       
+            #print(part_numbers)
             return sum(part_numbers)
         else:
         
