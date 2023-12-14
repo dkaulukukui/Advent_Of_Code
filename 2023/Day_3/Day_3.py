@@ -18,7 +18,7 @@ elif platform == "win32":
 
     mydir = "C:\\Users\\donal\\Documents\\Projects\\Advent_Of_Code\\Advent_Of_Code\\" + str(year) + "\\Day_" + str(day)
 
-myfile = "sample.txt"    
+myfile = "input.txt"    
 full_file_path_name = os.path.join(mydir, myfile)
 print(full_file_path_name)
 
@@ -51,16 +51,13 @@ def main(part):
         ## input data is now in a 2D array
 
         number_list = []
-        number_list_2=[]
-        number_locations = []
         part_numbers = []
         length_of_row = len(part_number_matrix[0])
+        numbers_dict = []
 
+           ##############################################Part 1 ############################################
 
-        if part == 1:       
-            ##############################################Part 1 ############################################
-
-            for y in range(len(part_number_matrix)):  #for every, row 0-139
+        for y in range(len(part_number_matrix)):  #for every, row 0-139
                 for x in range(length_of_row): #check every character in each column 0-139
 
                     char = part_number_matrix[y][x]
@@ -108,6 +105,15 @@ def main(part):
                             #print("first char location = " + str(first_char_location))
                             #print("last char location = " + str(last_char_location))
 
+                            
+                            #build list of dicts for each part number
+                            positions_list = set()
+                                            
+                            for i in range(first_char_location,last_char_location+1):
+                                if (x != 0): positions_list.add((i,y))
+                                else: positions_list.add((i,y-1)) 
+                            numbers_dict.append((int(number_string),positions_list))
+                            
                             #check all characters surrounding the number_list
 
                             #check the row above and below
@@ -128,16 +134,24 @@ def main(part):
                                             #print("Special Char found at row  " +str(y_to_check) + ", column  " + str(x_to_check) + " it is " + part_number_matrix[y_to_check][x_to_check])
                                             part_numbers.append(int(number_string))
 
+
                         number_list = []                        #reset the number list
                         number_locations = []                   #reset the number locations
 
                     
             ###################################################################################################
+
+
+        if part == 1:       
+
+            #print (numbers_dict)
+
             return sum(part_numbers)
+        
         else:
             ##############################################Part 2 ############################################
 
-            touches = False
+            Gear_ratios = []
 
             for y in range(len(part_number_matrix)):  #for every, row 0-139
                 for x in range(length_of_row): #check every character in each column 0-139
@@ -146,12 +160,15 @@ def main(part):
 
                     if (char == '*'):  #if char is a *
 
-                        print("found a potential gear  at row " +  str(y) + " column " + str(x))
+                        #print("found a potential gear at row " +  str(y+1) + " column " + str(x))
+
+                        gear_ratio_1 = 0
+                        gear_ratio_2 = 0
 
                         #check surrounding area for gear ratios
 
-                        area_to_check_col_start = x  - 3
-                        area_to_check_col_end = x + 3
+                        area_to_check_col_start = x  - 1
+                        area_to_check_col_end = x + 1
 
                         area_to_check_row_start = y - 1
                         area_to_check_row_end  = y + 1
@@ -164,41 +181,50 @@ def main(part):
                         if y < 0: area_to_check_row_start  = 0
                         elif y > line_counter: area_to_check_row_end = line_counter
 
-                        print("Checking rows" + str(area_to_check_row_start) + "-" + str(area_to_check_row_end))
-                        print("Checking columns "+ str(area_to_check_col_start) + "-" + str(area_to_check_col_end))
+                        #print("Checking rows " + str(area_to_check_row_start+1) + "-" + str(area_to_check_row_end+1))
+                        #print("Checking columns "+ str(area_to_check_col_start) + "-" + str(area_to_check_col_end))
 
+
+                        
                         for y_to_check in range(area_to_check_row_start,area_to_check_row_end+1):
                             for x_to_check in range(area_to_check_col_start,area_to_check_col_end+1):
 
-                                char = part_number_matrix[y_to_check][x_to_check]
+                                coord_to_check = (x_to_check,y_to_check)
+                                #print(numbers_dict)
 
-                                if (char.isnumeric()):  #if it is a number 
-                                    number_list_2.append(char) #add it to the number list, top left = 0,0,  y,x
-                                else: #
-                                    if len(number_list_2)>0:                  #if number list isnt empty
-                                        #do something with the number
+                                for item in numbers_dict:
+                                    key = item[0]
+                                    value = item[1]
 
-                                        #check to see if it touches the asterick
-                                        
-
-                                        print(number_list_2)
-
-
-                                        #rest list buffer and touches check
-                                        number_list_2 = []
-                                        touches = False 
-
-
-
-                    #else:
-
-                    #    break
- 
-                    
+                                    for i in value:
+                                        #print(coord_to_check)
+                                        #print(i)
+                                        if coord_to_check == i:
+                                            #print("Found a gear ratio = " + str(key))
+                                            
+                                            if gear_ratio_1 == 0:
+                                                gear_ratio_1 = key
+                                                #print("Gear Ratio 1 = " + str(gear_ratio_1))
+                                            elif gear_ratio_2 == 0 and gear_ratio_1 != key:
+                                                gear_ratio_2 = key
+                                                #print("Gear Ratio 2 = " + str(gear_ratio_2))
+                                            elif gear_ratio_1 != 0 and gear_ratio_2 != 0 and gear_ratio_1 != key and gear_ratio_2 != key:
+                                                #more than 2 numbers are close, reset
+                                                #print("more than three numbers!")
+                                                gear_ratio_1 = 0
+                                                gear_ratio_2 = 0
+                        
+                        if gear_ratio_1 != 0 and gear_ratio_2 != 0:
+                            #print("Gear Ratio " + str(gear_ratio_1) + ":" + str(gear_ratio_2) +" on row " + str(y+1) + " = " + str(gear_ratio_1*gear_ratio_2))
+                            Gear_ratios.append(gear_ratio_1*gear_ratio_2)
+        
             ###################################################################################################
 
+            #print(numbers_dict)
         
-            return 2
+            return sum(Gear_ratios)
+
+
 if __name__ == "__main__":
     print(main(1))
     print(main(2))
