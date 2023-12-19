@@ -30,7 +30,10 @@ def remove_char_from_list(list_of_stuff, char):
     
     return list_of_stuff
 
-def update_seed_map(mapping_info, seed_loc_map):
+def update_seed_map(mapping_info):
+
+    seed_loc_map = {}
+
     for line in mapping_info:
         dest_range_start = int(line.split(' ')[0])
         source_range_start = int(line.split(' ')[1])
@@ -46,6 +49,7 @@ def update_seed_map(mapping_info, seed_loc_map):
         for index, key in enumerate(keys_to_update):
             seed_loc_map.update({key:update_values[index]})
 
+    return seed_loc_map
 
 def main(part):
 
@@ -79,19 +83,19 @@ def main(part):
         #initialize some stuff
 
         #build Seed to location map using a running dict, updating values as we go
-        seed_loc_map = {}
+        maps = []
 
         #calculate soil
 
-        update_seed_map(seed_to_soil,seed_loc_map)
-        update_seed_map(soil_fertilizer,seed_loc_map)
-        update_seed_map(fertilizer_to_water,seed_loc_map)
-        update_seed_map(water_to_light,seed_loc_map)
-        update_seed_map(light_to_temp,seed_loc_map)
-        update_seed_map(temp_to_hum,seed_loc_map)
-        update_seed_map(hum_to_loc,seed_loc_map)
+        maps.append(update_seed_map(seed_to_soil))
+        maps.append(update_seed_map(soil_fertilizer))
+        maps.append(update_seed_map(fertilizer_to_water))
+        maps.append(update_seed_map(water_to_light))
+        maps.append(update_seed_map(light_to_temp))
+        maps.append(update_seed_map(temp_to_hum))
+        maps.append(update_seed_map(hum_to_loc))
 
-        print(seed_loc_map)
+        print(maps)
 
         seed_locations = []
 
@@ -105,17 +109,17 @@ def main(part):
 
             #check if seed is in seed map
 
-            if int(line) in seed_loc_map.keys():
-                #then set location to mapped value
-                seed_locations.append(seed_loc_map.get(int(line)))
-                print("found mapped seed")
+            # if int(line) in seed_loc_map.keys():
+            #     #then set location to mapped value
+            #     seed_locations.append(seed_loc_map.get(int(line)))
+            #     print("found mapped seed")
 
-            else:
-                seed_locations.append(int(line))
+            # else:
+            #     seed_locations.append(int(line))
 
         if part == 1:
    
-            return min(seed_locations)
+            return 1
         else:
 
             return 2
