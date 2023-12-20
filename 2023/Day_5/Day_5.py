@@ -95,12 +95,6 @@ def main(part):
         #print(maps)
 
         seed_locations = []
-        seed_locations_2 = []
-
-        ##part 2 seeds = seed start number, range of seeds
-
-        seed_ranges = []
-
 
         #iterate through prepared data
         for index, seed_num in tqdm(enumerate(seeds),"Part 1"):
@@ -157,55 +151,91 @@ def main(part):
    
             print("Part #1:")
             return min(seed_locations)
+        
         else:  ### part 2 ####
 
-            #iterate through prepared data
+            seed_ranges = []
+
+            #print(seeds)
+
+            #build s list of seed ranges to check later
             for index, seed_num in enumerate(seeds):
                 #do something for each line
 
-                key = int(seed_num)
-
-                            ### part 2 ############
+                #print(index)
 
                 if index%2 == 0:  ##if even then its a seed start
-                    seed_range_start = int(seeds[index]) # get range start
-                    seed_range_end = int(seeds[index]) + int(seeds[index+1])   ##get range end
+                    seed_range_start = int(seed_num) # get range start
+                    seed_range_end = int(seed_num) + int(seeds[index+1])   ##get range end
 
-                    print("\nseed range is from seed # " + str(seed_range_start)+ " to seed # " + str(seed_range_end-1))
+                    #print("seed range is from seed # " + str(seed_range_start)+ " to seed # " + str(seed_range_end-1))
 
-                    for thingy in tqdm(range(seed_range_start,seed_range_end)):
-                        ## do the same stuff for this new set of seed numbers
-                        key = thingy
+                    seed_ranges.append([seed_range_start,seed_range_end])
+                    #map seeds  and get locations
 
-                        #map seeds  and get locations
-                        for i in range(0,7):  ## for each of the 6 mappings 
+            #list of all seed ranges is completed
+            #print(seed_ranges)
+                    
+            #work backwards through seed locations reverse mapping then checking against seed ranges
+            for x in tqdm(range(11501422,1000000000), "Part 2: "): 
 
-                            found_flag = 0  #flag to see if match is found
+                key = x
 
-                            for conversion in maps[i]:  #check each conversion listed
+                #print("key ###### " + str(key))
 
-                                #intermediate calculations for easier code readability
-                                dest_range_start = conversion[0]
-                                source_range_start = conversion[1]
-                                range_length = conversion[2]
-                                source_range_end = source_range_start + range_length
-                                dest_range_end = dest_range_start + range_length
-                                delta = key - source_range_start
+                for i in range(6,-1,-1):  ## for each of the 6 mappings, backwards
 
-                                if key >= source_range_start and key <= source_range_end: ## check if seed is in one of the mappings
-                                    key = dest_range_start + delta  #update key to mapped value
-                                    found_flag = 1  # set flag
-                                    break   # break out of for loop to prevent double changes to key
+                    found_flag = 0
+                    #print(maps[i])
 
-                            if found_flag == 0: # no match found
-                                    key = key
-                            else:  #reset flag
-                                found_flag = 1
+                    for conversion in maps[i]:  #check each conversion listed
 
-                        seed_locations_2.append(key)
-    
-                print("Part #2:")
-                return min(seed_locations_2)
+                        dest_range_start = conversion[0]
+                        source_range_start = conversion[1]
+                        range_length = conversion[2]
+
+                        source_range_end = source_range_start + range_length
+                        dest_range_end = dest_range_start + range_length
+
+                        delta = key - dest_range_start
+                        
+                        #print("source range = " + str(source_range_start) + " to " + str(source_range_end))
+                        #print("dest range = " + str(dest_range_start) + " to " + str(dest_range_end))
+                        #print ("delta = " + str(delta))  
+                              
+                        if key >= dest_range_start and key <= dest_range_end: ## check if seed is in one of the mappings
+                            #print("found mapped key dest key " + str(key) + " in  " + str(maps[i]))
+                            key = source_range_start + delta
+                            #print("key now equals " + str(key))
+
+                            found_flag = 1
+
+                            break       
+
+                    if found_flag == 0:
+                        key = key
+                        #print("no key found for " + str(key))
+
+                    if i == 0 and found_flag == 1:
+
+                        #print(seed_ranges)
+                        #print(x)
+
+                        for y in seed_ranges:
+                            seed_range_min =y[0]
+                            seed_range_max = y[1]
+                            if (key >= seed_range_min and key <= seed_range_max):
+                                return x
+
+
+                    
+                
+                
+
+
+
+            #print("Part #2:")
+            #return 2
         
 if __name__ == "__main__":
     print(main(1))
