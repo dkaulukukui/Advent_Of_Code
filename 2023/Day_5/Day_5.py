@@ -74,15 +74,6 @@ def main(part):
         light_to_temp = data[data.index("light-to-temperature map:")+1:data.index("temperature-to-humidity map:")]
         temp_to_hum = data[data.index("temperature-to-humidity map:")+1:data.index("humidity-to-location map:")]
         hum_to_loc = data[data.index("humidity-to-location map:")+1:]
-
-        #print(seeds)
-        #print(seed_to_soil)
-        # print(soil_fertilizer)
-        # print(fertilizer_to_water)
-        #print(water_to_light)
-        # print(light_to_temp)
-        # print(temp_to_hum)
-        # print(hum_to_loc)
         
         #initialize some stuff
 
@@ -102,17 +93,22 @@ def main(part):
         #print(maps)
 
         seed_locations = []
+        seed_locations_2 = []
 
+        ##part 2 seeds = seed start number, range of seeds
+
+        seed_ranges = []
 
 
         #iterate through prepared data
-        for seed_num in seeds:
+        for index, seed_num in enumerate(seeds):
             #do something for each line
 
             key = int(seed_num)
 
             #print("seed # " + str(seed_num))
 
+            ########################## PArt 1###################
             #check if seed is in seed map
             for i in range(0,7):  ## for each of the 6 mappings 
 
@@ -152,16 +148,63 @@ def main(part):
                     found_flag = 1
 
                 
-            
+            #part 1 answer
             seed_locations.append(key)
 
         if part == 1:
    
-            #print(seed_locations)
+            print("Part #1:")
             return min(seed_locations)
-        else:
+        else:  ### part 2 ####
 
-            return 2
+            #iterate through prepared data
+            for index, seed_num in enumerate(seeds):
+                #do something for each line
+
+                key = int(seed_num)
+
+                            ### part 2 ############
+
+                if index%2 == 0:  ##if even then its a seed start
+                    seed_range_start = int(seeds[index]) # get range start
+                    seed_range_end = int(seeds[index]) + int(seeds[index+1])   ##get range end
+
+                    print("seed range is from seed # " + str(seed_range_start)+ " to seed # " + str(seed_range_end-1))
+
+                    for thingy in range(seed_range_start,seed_range_end):
+                        ## do the same stuff for this new set of seed numbers
+                        key = thingy
+
+                        #map seeds  and get locations
+                        for i in range(0,7):  ## for each of the 6 mappings 
+
+                            found_flag = 0  #flag to see if match is found
+
+                            for conversion in maps[i]:  #check each conversion listed
+
+                                #intermediate calculations for easier code readability
+                                dest_range_start = conversion[0]
+                                source_range_start = conversion[1]
+                                range_length = conversion[2]
+                                source_range_end = source_range_start + range_length
+                                dest_range_end = dest_range_start + range_length
+                                delta = key - source_range_start
+
+                                if key >= source_range_start and key <= source_range_end: ## check if seed is in one of the mappings
+                                    key = dest_range_start + delta  #update key to mapped value
+                                    found_flag = 1  # set flag
+                                    break   # break out of for loop to prevent double changes to key
+
+                            if found_flag == 0: # no match found
+                                    key = key
+                            else:  #reset flag
+                                found_flag = 1
+
+                        seed_locations_2.append(key)
+    
+                print("Part #2:")
+                return min(seed_locations_2)
+        
 if __name__ == "__main__":
     print(main(1))
-    #print(main(2))
+    print(main(2))
