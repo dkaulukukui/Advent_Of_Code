@@ -18,8 +18,8 @@ elif platform == "win32":
 
     mydir = "C:\\Users\\donal\\Documents\\Projects\\Advent_Of_Code\\Advent_Of_Code\\" + str(year) + "\\Day_" + str(day)
 
-myfile = "input.txt" 
-#myfile = "sample.txt"   
+#myfile = "input.txt" 
+myfile = "sample.txt"   
 full_file_path_name = os.path.join(mydir, myfile)
 print(full_file_path_name)
 
