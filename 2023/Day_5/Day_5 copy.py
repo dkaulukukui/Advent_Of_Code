@@ -168,7 +168,7 @@ def main(part):
                     seed_range_start = int(seed_num) # get range start
                     seed_range_end = int(seed_num) + int(seeds[index+1])   ##get range end
 
-                    print("seed range is from seed # " + str(seed_range_start)+ " to seed # " + str(seed_range_end-1))
+                    #print("seed range is from seed # " + str(seed_range_start)+ " to seed # " + str(seed_range_end-1))
 
                     seed_ranges.append([seed_range_start,seed_range_end])
                     #map seeds  and get locations
