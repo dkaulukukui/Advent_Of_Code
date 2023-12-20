@@ -63,12 +63,19 @@ def main(part):
     print(times)
     print(distances)
 
+    combined_time = int(times[0]+times[1]+times[2]+times[3])
+    combined_distance = int(distances[0]+distances[1]+distances[2]+distances[3])
+
+    print(combined_time)
+    print(combined_distance)
+
     #initialize some stuff
 
 #     For each whole millisecond you spend at the beginning 
 #     of the race holding down the button, the boat's speed 
 #     increases by one millimeter per millisecond.
     
+    ### PART 1 #####
     ways_to_win = []
 
     for index, this_race_duration in enumerate(times):
@@ -85,6 +92,19 @@ def main(part):
 
         ways_to_win.append(ways_to_win_counter)
     #iterate through prepared data
+    ### Part 2 ####
+
+    ways_to_win_counter = 0
+    
+    for button_hold_time in tqdm(range(0,int(combined_time))):
+
+        distance = button_hold_time*(combined_time-button_hold_time)
+
+        if(distance > combined_distance):
+            #print("Winner winner chicken dinner with " + str(button_hold_time))
+            ways_to_win_counter += 1
+
+    ways_to_win_counter
 
     if part == 1:
 
@@ -95,8 +115,8 @@ def main(part):
     else:  ### part 2 ####
 
         print("Part #2:")
-        return 2
+        return ways_to_win_counter
         
 if __name__ == "__main__":
     print(main(1))
-    #print(main(2))
+    print(main(2))
