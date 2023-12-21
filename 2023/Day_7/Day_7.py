@@ -129,10 +129,33 @@ def main(part):
     #sort hand
 
 
-    print(hands)
+    #print(hands)
 
-    print(sorted(hands, key=itemgetter(21)))
+    #print(sorted(hands, key=itemgetter(2)))
     #initialize some stuff
+
+    #break up hands to be further sorted
+    separated_hands=[[],[],[],[],[],[],[]]
+
+    for i in range(0,8):
+        for hand in hands:
+            if hand[2] == i:
+                separated_hands[i].append(hand)
+    
+
+
+    print(separated_hands)
+
+    for sub_list_of_hands in separated_hands:
+
+        num_items_to_compare = len(sub_list_of_hands)
+
+        if num_items_to_compare > 1:
+            for index, item in enumerate(sub_list_of_hands):
+                for i in range 
+                    if compare_hands(item, sub_list_of_hands[index+1] != True): #if hand 2 is better than hand one, swap positions.
+
+
 
         # build ranked list of hands
 
