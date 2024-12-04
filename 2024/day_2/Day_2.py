@@ -74,8 +74,120 @@ def main(part):
 
 #######################################part 2######################################
 
+        #initialize stuff
 
-        part_2_answer = 2
+        part_2_answer = 0
+
+        bad_reports = []
+
+        #iterate through data
+        for line in data: 
+
+            split_line = line.split(' ')
+            #print(split_line)
+
+            is_increasing = None
+
+            report_counter = 0
+
+            for i in range(0, len(split_line)-1):
+                a = int(split_line[i])
+                b = int(split_line[i+1])
+
+                if a > b:  #decreasing
+                    if is_increasing is None:
+                        is_increasing = False
+                    elif is_increasing:
+                        break  #should be increasing but is decreasing
+                else:  #increasing
+                    if is_increasing is None:
+                        is_increasing = True
+                    elif not is_increasing:
+                        break #should be decreasing but is increasing
+                
+                delta = abs(a-b)
+
+                #check if within 3
+                if delta < 1 or delta > 3:
+                    break  #delta is greater than that allowed
+            
+                else:
+                    report_counter += 1
+                    continue  #
+
+            if report_counter == (len(split_line)-1):
+                part_2_answer +=1
+                ##
+            else:
+                bad_reports.append(split_line)
+            
+
+            ###Now do some brute force shenanigans to get try every report with one item removed
+
+            ## for every report remove each of the items then run the checks again
+
+        for item in bad_reports:
+
+            print(item)
+
+            for i in range(0, len(item)):
+
+                new_list = item.copy()
+                new_list.pop(i)
+
+                print(new_list)
+
+                is_increasing = None
+
+                report_counter = 0
+
+                for i in range(0, len(new_list)-1):
+                    a = int(new_list[i])
+                    b = int(new_list[i+1])
+
+                    if a > b:  #decreasing
+                        if is_increasing is None:
+                            is_increasing = False
+                        elif is_increasing:
+                            break  #should be increasing but is decreasing
+                    else:  #increasing
+                        if is_increasing is None:
+                            is_increasing = True
+                        elif not is_increasing:
+                            break #should be decreasing but is increasing
+                    
+                    delta = abs(a-b)
+
+                    #check if within 3
+                    if delta < 1 or delta > 3:
+                        break  #delta is greater than that allowed
+                
+                    else:
+                        report_counter += 1
+                        continue  #
+
+                if report_counter == (len(new_list)-1):
+                    part_2_answer +=1
+                    break
+                    ##
+                # #determine if report is increasing or decreasing
+                # all_increasing = all(int(new_list[i]) < int(new_list[i+1]) for i in range(len(new_list) -1))
+                # all_decreasing = all(int(new_list[i]) > int(new_list[i+1]) for i in range(len(new_list) -1))
+
+                # #determine if report is within range
+
+                # if(all_increasing):
+                #     within_range = all(int(new_list[i+1]) <= (int(new_list[i])+3) for i in range(len(new_list) -1))
+
+                # if(all_decreasing):
+                #     within_range = all(int(new_list[i+1]) >= (int(new_list[i])-3) for i in range(len(new_list) -1))
+
+                # if(within_range):
+                #     part_2_answer += 1
+                #     break
+       
+
+
         
 
 ###################################################################################
