@@ -37,20 +37,20 @@ def main(part):
 
         
 ######################################part 1 ######################################
+        if part == 1:
+            muls = []
 
-        muls = []
+            for line in data:
 
-        for line in data:
+                muls.extend(re.findall(r"mul\(\d+,\d+\)", line))
 
-            muls.extend(re.findall(r"mul\(\d+,\d+\)", line))
+            #print(muls)
 
-        print(muls)
+            values = [re.findall(r"\d+", match) for match in muls]
 
-        values = [re.findall(r"\d+", match) for match in muls]
+            values = [(int(x), int(y)) for x, y in values]
 
-        values = [(int(x), int(y)) for x, y in values]
-
-        part_1_answer =  sum(x * y for x, y in values)
+            part_1_answer =  sum(x * y for x, y in values)
 
         # tried answers 
         # 26186104 is too low
@@ -69,11 +69,58 @@ def main(part):
 
 #######################################part 2######################################
 
-        #initialize stuff
+        if part == 2:
 
-        part_2_answer = 0
+            #initialize stuff
 
-        #iterate through data
+
+            part_2_answer = 0
+
+            do_or_dont_state = []
+            separated_input = []
+            consolidated_line = ""
+            muls_2 = []
+
+            #iterate through data
+
+            for line in data:
+                consolidated_line += line
+
+
+            #print(consolidated_line)
+
+            do_or_dont_state.extend(re.findall(r"do\(\)|don't\(\)", consolidated_line))
+            separated_input.extend(re.split(r"do\(\)|don't\(\)", consolidated_line))
+            
+            #print (do_or_dont_state)
+            #print (separated_input)
+
+            #initial state is do so add up all the muls in the first index
+
+            muls_2.extend(re.findall(r"mul\(\d+,\d+\)", separated_input[0]))
+
+            #print(muls_2)
+
+            for i in range(0, len(do_or_dont_state)-1):
+                #print("State at index:")
+                #print(i)
+                #print(do_or_dont_state[i])
+                if (do_or_dont_state[i] == "do()"):
+                    #print(re.findall(r"mul\(\d+,\d+\)", separated_input[i+1]))
+                    muls_2.extend(re.findall(r"mul\(\d+,\d+\)", separated_input[i+1]))
+
+            values = [re.findall(r"\d+", match) for match in muls_2]
+
+            values = [(int(x), int(y)) for x, y in values]
+
+            part_2_answer =  sum(x * y for x, y in values)
+
+            #answers tried
+            # 1281028 too low
+            # 76973064 too high
+            # 81819494 too high
+            # 75920122 = correct!!!
+
       
 
 ###################################################################################
@@ -85,5 +132,8 @@ def main(part):
             return part_2_answer
         
 if __name__ == "__main__":
-    print(main(1))
-    print(main(2))
+    print("Part 1: " + str(main(1)))
+    #print(main(1))
+
+    print("Part 2: " + str(main(2)))
+    #print(main(2))
