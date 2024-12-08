@@ -211,7 +211,8 @@ def main(part):
             #start moving guard around
 
             #while guard is in bounds
-            while ( 0 <= guard_x < x_size) and ( 0 <= guard_y < y_size):
+            while (True):
+            #while ( 0 <= guard_x < x_size) and ( 0 <= guard_y < y_size):
 
                 next_guard_pos_x = guard_x + direction_map[direction][0]
                 next_guard_pos_y = guard_y + direction_map[direction][1]
@@ -221,25 +222,20 @@ def main(part):
 
                 #if next move is out of bounds
                 if not(0 <= next_guard_pos_x < x_size) or not(0 <=next_guard_pos_y < y_size):
+                    previous_positions.append([guard_x,guard_y,direction]) #save current position to positions list
                     matrix[guard_y][guard_x] = direction_indicator[direction]
                     break
 
-                else: #next move is still in bounds
-                    if (matrix[next_guard_pos_y][next_guard_pos_x] == '#'):
-                        direction = (direction + 1)%4 ## turn right 90 degrees
-                        continue
+                elif (matrix[next_guard_pos_y][next_guard_pos_x] == '#'):
+                    previous_positions.append([guard_x,guard_y,direction]) #save current position to positions list
+                    direction = (direction + 1)%4 ## turn right 90 degrees
+                    continue
 
-                    # elif (matrix[next_guard_pos_y][next_guard_pos_x] == '.'):
-                    #     #mark current position with an X and move guard
-                    #     matrix[guard_y][guard_x] = direction_indicator[direction] ## mark with direction indicator
-                    #     guard_x = next_guard_pos_x
-                    #     guard_y = next_guard_pos_y
-
-                    else:
-                        previous_positions.append([guard_x,guard_y,direction]) #save current position to positions list
-                        matrix[guard_y][guard_x] = direction_indicator[direction] ## mark with direction indicator
-                        guard_x = next_guard_pos_x #move guard
-                        guard_y = next_guard_pos_y
+                else:
+                    previous_positions.append([guard_x,guard_y,direction]) #save current position to positions list
+                    matrix[guard_y][guard_x] = direction_indicator[direction] ## mark with direction indicator
+                    guard_x = next_guard_pos_x #move guard
+                    guard_y = next_guard_pos_y
 
                 #matrix_states.append([row[:] for row in matrix])
 
@@ -249,7 +245,7 @@ def main(part):
             # for line in matrix:
             #     print(line)
 
-            #print(previous_positions)
+            #part_1_answer = len(previous_positions)
 
             part_1_answer = day6_count_things_in_matrix(matrix,'^') + day6_count_things_in_matrix(matrix,'>') + day6_count_things_in_matrix(matrix,'<')+day6_count_things_in_matrix(matrix,'v')
            
@@ -287,10 +283,16 @@ def main(part):
                 start_direction = 2 #down
             
             #for every position in previous positions list, place a block and then run the guard path checking for loops, if a loop then save position of block
+
+            to_go = len(previous_positions)-1
             
             for places_been in previous_positions[1:]:  #skip starting position
+            # for i in range(2):
+            #     places_been = [64, 28, 1]
 
-                print("Still Checking...")
+                #print("Still Checking...")
+                print(to_go)
+                to_go += -1
 
                 #reset everything
                 guard_x = start_guard_x
@@ -307,18 +309,19 @@ def main(part):
 
                 #print(places_been)
 
+
                 block_pos_x = places_been[0]
                 block_pos_y = places_been[1]
+                #print(matrix[block_pos_y][block_pos_x])
                 matrix[block_pos_y][block_pos_x] = '#'
 
                 #print("Placing block at " + str(block_pos_x) + str(block_pos_y))
 
                 #print(loop_positions)
 
-
-
                 #while guard is in bounds
-                while ( 0 <= guard_x < x_size) and ( 0 <= guard_y < y_size):
+                while (True):
+                #while ( 0 <= guard_x < x_size) and ( 0 <= guard_y < y_size):
 
                     next_guard_pos_x = guard_x + direction_map[direction][0]
                     next_guard_pos_y = guard_y + direction_map[direction][1]
@@ -326,12 +329,14 @@ def main(part):
                     next_guard_state = [next_guard_pos_x,next_guard_pos_y,direction]
 
                     # print(next_guard_state)
-                    # print(loop_check)
+                    # #print(loop_check)
+                    # print(next_guard_state in loop_check)
 
-                    if next_guard_state in loop_check: 
-                        ## We've already been here in this direction, this is a loop
-                        print("Loop!")
-                        loop_positions.append([block_pos_x,block_pos_y])
+                    if next_guard_state in loop_check: ## We've already been here in this direction, this is a loop
+                        #print("Loop!")
+                        if ([block_pos_x,block_pos_y] not in loop_positions): #check  for duplicates
+                            loop_positions.append([block_pos_x,block_pos_y])
+
                         break
 
                     else: 
@@ -339,25 +344,46 @@ def main(part):
                         # print("Current Position: ", guard_x, guard_y)
                         # print("Next Position: ", next_guard_pos_x, next_guard_pos_y)
 
-                        #if next move is out of bounds
+                        #if next pos is out of bounds
                         if not(0 <= next_guard_pos_x < x_size) or not(0 <=next_guard_pos_y < y_size):
-                            matrix[guard_y][guard_x] = direction_indicator[direction]
+                            loop_check.append([guard_x,guard_y,direction]) #save last position to positions list
+                            #matrix[guard_y][guard_x] = direction_indicator[direction]
+                            #print("Guard Escaped!")
                             break
 
-                        else: #next move is still in bounds
-                            if (matrix[next_guard_pos_y][next_guard_pos_x] == '#'): ##next move is a turn
-                                direction = (direction + 1)%4 ## turn right 90 degrees
-                                continue
+                        #if next pos is a # then turn
+                        elif (matrix[next_guard_pos_y][next_guard_pos_x] == '#'): ##next move is a turn
+                            loop_check.append([guard_x,guard_y,direction]) #save current position to positions list, rotated position will be saved when we move
+                            direction = (direction + 1)%4 ## turn right 90 degrees
 
-                            else:  ##move forward
-                                loop_check.append([guard_x,guard_y,direction]) #save current position to positions list
-                                #matrix[guard_y][guard_x] = direction_indicator[direction] ## mark with direction indicator
-                                guard_x = next_guard_pos_x
-                                guard_y = next_guard_pos_y
-                    
+                        else:
+                            ##move forward
+                            loop_check.append([guard_x,guard_y,direction]) #save current position to positions list
+                            #matrix[guard_y][guard_x] = direction_indicator[direction] ## mark with direction indicator
+                            guard_x = next_guard_pos_x
+                            guard_y = next_guard_pos_y
+            
+            #remove start position
+            if ([start_guard_x,start_guard_y] in loop_positions):
+                loop_positions.remove([start_guard_x,start_guard_y])
+
             part_2_answer = len(loop_positions)
+            #print(loop_positions)
+
+            # no_dups = []
+            # for item in loop_positions:
+            #     if item not in no_dups:
+            #         no_dups.append(item)
+            # print("Part 2 no dups:")
+            # print(len(no_dups))
+            # print (no_dups)
+
             print("Part 2 Answer:")
             print(part_2_answer)
+
+
+            #1736 = too high
+            #1587 = too high
 
            
 
