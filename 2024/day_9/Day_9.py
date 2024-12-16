@@ -51,6 +51,30 @@ def day9_calc_checksum(disk_list):
             checksum += int(disk_list[i])*i
     
     return checksum
+
+def day9_part2_get_first_empty_of_size(disk_list, size):
+    start_index = 0
+
+   # print("looking for space of size " + str(size))
+
+    for i in range(0, len(disk_list)-size):
+        space_count = 0
+
+        if disk_list[i] =='.':
+            for j in range(0,size+1):
+                if disk_list[i+j] == '.':
+                    space_count += 1
+                    continue
+                else:
+                    break
+
+    #    print("size of block at " + str(i) + " is " + str(space_count))
+
+        if space_count >= size:
+     #       print("Size of space: " + str(space_count) + " starting at " + str(i))
+            return i
+    
+    return -1
             
 
 def main(part):
@@ -72,7 +96,7 @@ def main(part):
             #day9_print_disk_map(disk_map)
 
             disk_list = day9_generate_disk_list(disk_map)
-            print(disk_list)
+            # print(disk_list)
 
             for i in range(len(disk_list)-1,-1,-1):
                 first_emtpy_space = day9_get_first_empty_spot(disk_list)
@@ -84,7 +108,7 @@ def main(part):
                     disk_list[i] = "."
                     #print(disk_list)
             
-            print(disk_list)
+            # print(disk_list)
 
             part_1_answer = day9_calc_checksum(disk_list)
 
@@ -102,6 +126,49 @@ def main(part):
             print() #newline
 
             part_2_answer = 0
+
+            disk_map, disk_map_length = day9_parse_data(full_file_path_name)
+
+            # print(disk_map)
+            # print(disk_map_length)
+
+            #day9_print_disk_map(disk_map)
+
+            disk_list = day9_generate_disk_list(disk_map)
+            # print(disk_list)
+
+            i = len(disk_list)-1
+            while i >= 0:
+
+                #find first thing at the end
+                if disk_list[i] != '.':
+
+                    #print("Processing " + str(disk_list[i]))
+                    memory_block_size = 1
+
+                    ##figure out how much space it takes up
+                    while(disk_list[i-memory_block_size] == disk_list[i]):
+                        memory_block_size +=1
+
+                    ##find the first spot available with enough space
+
+                    first_empty_slot = day9_part2_get_first_empty_of_size(disk_list,memory_block_size)
+
+                    if (first_empty_slot != -1) and (first_empty_slot < i):
+                        ##move the memory
+                    #    print(disk_list)
+                        for j in range(0,memory_block_size):
+                            disk_list[first_empty_slot+j] = disk_list[i-j]
+                            disk_list[i-j] = '.'
+                    #    print(disk_list)
+                    #else: 
+                    #    print("no space found for " + str(disk_list[i]))
+                    
+                    i -= memory_block_size
+                else:
+                    i -= 1
+            
+            part_2_answer = day9_calc_checksum(disk_list)
 
 
 ###################################################################################
