@@ -2,8 +2,8 @@
 from input_processing import get_full_filepath
 from AOC_DEBUG import debug_print
 
-debug = True
-#debug = False
+part_1_debug = False
+part_2_debug = False
 
 year = 2024
 day = 10
@@ -73,7 +73,7 @@ def day10_get_movable_spots(topomap, position):
             if(next_position_delta == 1):
                 movements.append(next_position)
 
-    #debug_print(movements, debug)
+    debug_print(movements, part_1_debug)
     
     return movements
     
@@ -84,6 +84,7 @@ def day10_find_trails(topo_map, trailhead):
     # calculate and return the number of trails
 
     ends_reached = []
+    rating = 0
 
     size_y = len(topo_map)
     size_x = len(topo_map[0])
@@ -96,13 +97,15 @@ def day10_find_trails(topo_map, trailhead):
 
             current_location_height = topo_map[current_location[1]][current_location[0]]
 
-            #debug_print("Current height is " + str(current_location_height), debug)
+            debug_print("Current height is " + str(current_location_height), part_1_debug)
 
             if(current_location_height == '9'):
                 ends_reached.append(current_location)
+                rating += 1
 
             else:
-                movable_spots.extend(day10_get_movable_spots(topo_map,current_location))
+                spots_to_add = day10_get_movable_spots(topo_map,current_location)
+                movable_spots.extend(spots_to_add)
 
             ###to do:  figure out to iterate through all potential paths cleanly
               ##idea, given any point run all potential paths and determine if it can eventually lead to a 9, if so return 
@@ -113,9 +116,10 @@ def day10_find_trails(topo_map, trailhead):
     # if(topo_map[current_location[1]][topo_map[current_location[0]]] == '9'):
     #     ends_reached.append(current_location)
 
-    #debug_print(list(set(ends_reached)), debug)
+    debug_print(list(set(ends_reached)), part_1_debug)
+    debug_print(rating, part_2_debug)
     
-    return list(set(ends_reached))
+    return list(set(ends_reached)), rating
 
 
 def main(part):
@@ -123,7 +127,7 @@ def main(part):
         full_file_path_name = get_full_filepath(year, day, myfile)
 
 ######################################part 1 ######################################
-        if part == 1:
+        if part == 1 or part == 2:
 
             part_1_answer = 0
 
@@ -133,30 +137,38 @@ def main(part):
 
             matrix, trail_heads = day10_parse_data(full_file_path_name)
 
-            debug_print(matrix, debug)
-            debug_print(trail_heads, debug)
+            debug_print(matrix, part_1_debug)
+            debug_print(trail_heads, part_1_debug)
 
             trails = []
+            ratings = []
 
             for trail_head in trail_heads:
-                trails.append(day10_find_trails(matrix, trail_head))
+                trails_to_add, rating = day10_find_trails(matrix, trail_head)
+                trails.append(trails_to_add)
+                ratings.append(rating)
 
-            #debug_print(trails, debug)
+            debug_print(trails, part_1_debug)
+            debug_print(ratings, part_2_debug)
 
             for item in trails: 
                 part_1_answer += len(item)
+            
+            part_2_answer = sum(ratings)
 
 ###################################################################################
 
 #######################################part 2######################################
 
-        if part == 2:
+        # if part == 2:
 
-            print("Part 2 calculating", end='')
+        #     print("Part 2 calculating", end='')
 
-            print() #newline
+        #     print() #newline
 
-            part_2_answer = 0
+        #     part_2_answer = 0
+            
+        #     matrix, trail_heads = day10_parse_data(full_file_path_name)
 
 
 ###################################################################################
