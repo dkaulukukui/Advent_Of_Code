@@ -1,4 +1,4 @@
-
+import time
 from input_processing import get_full_filepath
 from AOC_DEBUG import debug_print
 
@@ -23,12 +23,50 @@ def day11_parse_data(full_file_path_name):
         
     return data
 
+def day11_calculate_num_rocks(num, iterations):
+     
+    rocks = [num]
+     
+    for i in range(0,iterations):
+
+        modified_rocks = []
+
+        for index in range(0, len(rocks)):
+            rock = rocks[index]
+
+            # If the stone is engraved with the number 0, it is replaced by a stone engraved with the number 1.
+            if rock == 0:
+                modified_rocks.append(1)
+            # If the stone is engraved with a number that has an even number of digits, it is replaced by two stones. 
+            # The left half of the digits are engraved on the new left stone, and the right half of the digits are engraved on the new right stone. 
+            # (The new numbers don't keep extra leading zeroes: 1000 would become stones 10 and 0.)
+            elif len(str(rock))%2 == 0:
+                rock_string = str(rock)
+                rock_length = len(rock_string)
+                dividing_point = int(rock_length/2)
+                first_rock = rock_string[:dividing_point]
+                second_rock = rock_string[dividing_point:]
+
+                modified_rocks.append(int(first_rock))
+                modified_rocks.append(int(second_rock))
+            # If none of the other rules apply, the stone is replaced by a new stone; the old stone's number multiplied by 2024 is engraved on the new stone.
+            else:
+                modified_rocks.append(int(rock)*2024)
+        
+        rocks = modified_rocks
+
+    return len(rocks)
+
+
 def main(part):
         
         full_file_path_name = get_full_filepath(year, day, myfile)
 
+
+
 ######################################part 1 ######################################
         if part == 1:
+            start_time = time.time()
 
             part_1_answer = 0
 
@@ -51,7 +89,6 @@ def main(part):
 
                     # If the stone is engraved with the number 0, it is replaced by a stone engraved with the number 1.
                     if int(rock) == 0:
-                        # rocks[index] == '1'
                         modified_rocks.append('1')
                     # If the stone is engraved with a number that has an even number of digits, it is replaced by two stones. 
                     # The left half of the digits are engraved on the new left stone, and the right half of the digits are engraved on the new right stone. 
@@ -66,14 +103,10 @@ def main(part):
                         # debug_print(first_rock, part_1_debug)
                         # debug_print(second_rock, part_1_debug)
 
-                        # rocks[index] = first_rock
-                        # rocks.insert(index+1, second_rock)
-
                         modified_rocks.append(first_rock)
                         modified_rocks.append(str(int(second_rock)))
                     # If none of the other rules apply, the stone is replaced by a new stone; the old stone's number multiplied by 2024 is engraved on the new stone.
                     else:
-                        # rocks[index] = str(int(rock)*2024)
                         modified_rocks.append(str(int(rock)*2024))
                 
                 rocks = modified_rocks
@@ -82,7 +115,10 @@ def main(part):
 
             part_1_answer = len(rocks)
                       
+            end_time = time.time()
 
+            duration = end_time - start_time
+            print(f"Time taken: {duration:.6f} seconds")
 
            
             
@@ -92,7 +128,10 @@ def main(part):
 
 #######################################part 2######################################
 
+                
         if part == 2:
+
+            # start_time = time.time()
             
             part_2_answer = 0
 
@@ -100,7 +139,19 @@ def main(part):
 
             print() #newline
 
-            
+            rocks = day11_parse_data(full_file_path_name)
+
+            debug_print(rocks, part_2_debug)
+
+            start_time = time.time()
+
+            for rock in rocks:
+                part_2_answer += day11_calculate_num_rocks(int(rock), 75)
+
+            end_time = time.time()
+
+            duration = end_time - start_time
+            print(f"Time taken: {duration:.6f} seconds")
 
 
 ###################################################################################
